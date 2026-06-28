@@ -1,0 +1,36 @@
+_subdirectory: template
+github_org:
+  type: str
+  help: The GitHub username or org that will "own" this action
+  placeholder: pcrockett
+action_name:
+  type: str
+  help: The name of the action as written in a workflow "uses"
+  placeholder: setup-tool
+action_human_friendly_name:
+  type: str
+  help: A human-friendly name, displayed in GH Actions UI
+  placeholder: Setup Tool
+action_description:
+  type: str
+  help: A human-friendly description of the action
+  placeholder: Installs <TOOL> in your GitHub workflows
+tool_name:
+  type: str
+  help: The name of your tool
+  placeholder: tool
+tool_doc_url:
+  type: str
+  help: The URL pointing to a place where someone might learn about the tool you're installing
+  placeholder: https://tool.example.com/docs
+tool_latest_version:
+  type: str
+  help: Latest version of the tool as it would be provided as input to the action
+  placeholder: 1.2.34
+tool_latest_checksum:
+  type: str
+  help: SHA256 checksum of the tool's download artifact
+tool_download_url:
+  type: str
+  help: "Download URL for the tool, with ${VERSION} placeholders"
+  placeholder: https://github.com/SOME_ORG/SOME_REPO/releases/download/v${VERSION}/tool_${VERSION}_Linux_x86_64.tar.gz

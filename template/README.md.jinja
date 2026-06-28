@@ -1,0 +1,31 @@
+# {{action_name}} action
+
+easy way to install [{{tool_name}}]({{tool_doc_url}}) in your GitHub Actions
+workflows.
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+      - uses: {{github_org}}/{{action_name}}@LATEST_RELEASE_TAG
+```
+
+if you don't want to use the default version of flyctl that comes with this action, you
+can specify your own version and checksum:
+
+```yaml
+- uses: {{github_org}}/{{action_name}}@LATEST_RELEASE_TAG
+  with:
+    version: '{{tool_latest_version}}'
+    checksum: '{{tool_latest_checksum}}'
+```
+
+**recommended:** run [pinact](https://github.com/suzuki-shunsuke/pinact) to pin your
+actions to a specific release. don't worry, if you're using Dependabot, Renovate, etc.,
+they will update your pins correctly for you.
+
+```bash
+pinact run --update
+```

@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://www.schemastore.org/github-action.json
+
+name: '{{action_human_friendly_name}}'
+description: '{{action_description}}'
+inputs:
+  version:
+    description: 'Version to install, ex: {{tool_latest_version}}'
+    default: '{{tool_latest_version}}'
+  checksum:
+    description: 'SHA256 checksum of download artifact'
+    default: '{{tool_latest_checksum}}'
+
+runs:
+  using: "composite"
+  steps:
+    - id: cache
+      name: Cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      with:
+        path: ~/.cache/{{action_name}}
+        key: {{action_name}}-1|{% raw %}${{ inputs.version }}|${{ inputs.checksum }}{% endraw %}
+
+    - name: Download {{tool_name}}
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        VERSION: {% raw %}${{ inputs.version }}{% endraw %}
+        CHECKSUM: {% raw %}${{ inputs.checksum }}{% endraw %}
+      run: |
+        mkdir -p ~/.cache/{{action_name}}
+        "${GITHUB_ACTION_PATH}/download-artifact.sh" \
+          "{{tool_download_url}}" \
+          ~/.cache/{{action_name}}/artifact.tar.gz \
+          "${CHECKSUM}"
+
+    - name: Install {{tool_name}}
+      shell: bash
+      run: |
+        install_dir=~/.local/bin
+        mkdir -p "${install_dir}"
+        cd ~/.cache/{{action_name}}
+        tar -xzf artifact.tar.gz
+        chmod +x {{tool_name}}
+        mv {{tool_name}} "${install_dir}"
+        echo "${install_dir}" >>"${GITHUB_PATH}"
