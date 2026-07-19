@@ -7,5 +7,5 @@ lint:
     pre-commit run --all --show-diff-on-failure --color always
 
 # Update repos
-update-repos:
-    ./update-repos.nu
+update-repos msg="Update from template":
+    ./update-repos.nu --commit-message {{msg}}

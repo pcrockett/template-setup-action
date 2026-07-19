@@ -3,7 +3,7 @@
 const BRANCH_NAME = "template-update"
 
 # Shallow-clone all your `setup-*` GitHub repos, apply template updates, and open an PR
-def main [] {
+def main [--commit-message(-m) = "Update from template"] {
   let repos = (
     gh api '/search/repositories?q=user:@me+setup-+in:name&per_page=100'
     | from json
@@ -20,7 +20,7 @@ def main [] {
     cd $temp_dir
     (
       $repos
-      | each { update-repo }
+      | each { update-repo $commit_message }
     )
   } catch {|err|
     do $cleanup
@@ -30,7 +30,7 @@ def main [] {
   do $cleanup
 }
 
-def update-repo []: record<name: string, full_name: string> -> nothing {
+def update-repo [commit_msg: string]: record<name: string, full_name: string> -> nothing {
   let repo = $in
   ^gh repo clone $repo.full_name -- --depth 1
   cd $repo.name
@@ -45,11 +45,11 @@ def update-repo []: record<name: string, full_name: string> -> nothing {
   }
   ^git add .
   ^git sw -c $BRANCH_NAME
-  ^git commit -m "update from template"
+  ^git commit -m $commit_msg
   ^git push --set-upstream origin $BRANCH_NAME
   (
     ^gh pr create
-    --title "Update from template"
+    --title $commit_msg
     --body ""
     --assignee @me
     --draft
