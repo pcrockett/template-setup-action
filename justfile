@@ -8,4 +8,4 @@ lint:
 
 # Update repos
 update-repos msg="Update from template":
-    ./update-repos.nu --commit-message {{msg}}
+    ./update-repos.nu --commit-message "{{msg}}"
